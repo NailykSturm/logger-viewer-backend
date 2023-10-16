@@ -1,0 +1,36 @@
+{
+  "name": "logger-viewer-backend",
+  "version": "1.0.0",
+  "description": "API for the logger view application",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node build/index.js",
+    "predev": "npm run swagger",
+    "prebuild": "npm run swagger",
+    "build": "tsc",
+    "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec\"",
+    "swagger": "tsoa spec"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts",
+    "exec": "ts-node src/index.ts"
+  },
+  "author": "Kylian BACHELET",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.19",
+    "@types/node": "^20.8.6",
+    "@types/swagger-ui-express": "^4.1.4",
+    "concurrently": "^8.2.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "swagger-ui-express": "^5.0.0",
+    "tsoa": "^5.1.1"
+  }
+}
