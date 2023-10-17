@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lvapi-deployment
+  labels:
+    lvapi: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lvapi
+  template:
+    metadata:
+      labels:
+        app: lvapi
+    spec:
+      containers:
+      - name: lvapi
+        image: nailyks/logger-viewer-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
