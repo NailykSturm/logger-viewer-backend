@@ -6,14 +6,42 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"PingResponse": {
+			"PingData": {
 				"properties": {
 					"message": {
 						"type": "string"
+					},
+					"payload": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
 					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ValidateErrorJSON": {
+				"properties": {
+					"message": {
+						"type": "string",
+						"enum": [
+							"Validation failed"
+						],
+						"nullable": false
+					},
+					"details": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					}
+				},
+				"required": [
+					"message",
+					"details"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -34,7 +62,7 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/ping": {
+		"/api/ping": {
 			"get": {
 				"operationId": "GetMessage",
 				"responses": {
@@ -43,7 +71,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/PingResponse"
+									"$ref": "#/components/schemas/PingData"
 								}
 							}
 						}
@@ -51,9 +79,49 @@
 				},
 				"security": [],
 				"parameters": []
+			},
+			"post": {
+				"operationId": "PostMessage",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PingData"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidateErrorJSON"
+								}
+							}
+						}
+					}
+				},
+				"description": "Route for ping the service and get a message\nUsefull for testing multiple services",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"description": "Data to send to the service and modify it as proof of work",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PingData",
+								"description": "Data to send to the service and modify it as proof of work"
+							}
+						}
+					}
+				}
 			}
 		},
-		"/health": {
+		"/api/health": {
 			"get": {
 				"operationId": "Index",
 				"responses": {
