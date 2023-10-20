@@ -1,6 +1,8 @@
 import { Route, Get, Post, Response, SuccessResponse, Body } from "tsoa";
+import axios, { AxiosError } from "axios";
 
 import { ValidateErrorJSON } from "../models/errors";
+import loadEnv from "../utils/load_env";
 
 interface PingData {
     message: string;
@@ -11,7 +13,7 @@ interface PingData {
 export default class PingController {
 
     private static instance: PingController;
-    private constructor() { }
+    private constructor() {}
     public static getInstance(): PingController {
         if (!PingController.instance) {
             PingController.instance = new PingController();
@@ -22,14 +24,13 @@ export default class PingController {
     @Get('/')
     public async getMessage(): Promise<PingData> {
         return {
-            message: "hello",
+            message: "API Pinged",
         };
     }
 
     /**
-     * Route for ping the service and get a message
-     * Usefull for testing multiple services
-     * @param {PingData} data Data to send to the service and modify it as proof of work
+     * Route for ping the API. Usefull for testing multiple services
+     * @param {PingData} data Data to send to the API and modify it as proof of work
      * @returns the data with the proof of work
      */
     @Response<ValidateErrorJSON>(422, "Validation Failed")
@@ -39,7 +40,38 @@ export default class PingController {
         @Body() data: PingData
     ): Promise<PingData> {
         if (!data.payload) data.payload = [];
-        data.payload.push("Logger Service pinged");
+        data.payload.push("API pinged");
+        return data;
+    }
+
+    /**
+     * Route for ping the API and other services linked. Usefull for testing multiple services<br>
+     * With this method, the API will also ping the Logger Service
+     * @param {PingData} data  Data to send to the service and modify it as proof of work
+     * @returns the data with the proof of work
+     */
+    @Response<ValidateErrorJSON>(422, "Validation Error")
+    @SuccessResponse("200", "OK")
+    @Post("rec")
+    public async postMessageRec(
+        @Body() data: PingData
+    ): Promise<PingData> {
+        if (!data.payload) data.payload = [];
+        data.payload.push("API pinged");
+
+        const url = `http://localhost:${loadEnv.LOGGER_SERVICE_PORT}/logger/ping`;
+
+        try {
+            const response = await axios.post(url, data);
+            const responseData: PingData = response.data;
+            data.payload = responseData.payload;
+
+        } catch (error: any) {
+            const err = `Logger service unreachable : ${JSON.stringify(error.response?.data)}`
+            console.log(err);
+            data.payload?.push(err);
+        }
+
         return data;
     }
 }

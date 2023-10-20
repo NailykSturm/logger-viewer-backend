@@ -18,6 +18,11 @@ router.post("/ping", async (req, res) => {
   return res.send(response);
 });
 
+router.post("/ping/rec", async (req, res) => {
+  const response = await pingController.postMessageRec(req.body);
+  return res.send(response);
+});
+
 router.get('/health', async (_req, res) => {
   const response = await healthController.index();
   return res.send(response);
