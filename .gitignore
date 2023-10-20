@@ -91,6 +91,7 @@ out
 .nuxt
 build
 dist
+public/swagger.json
 
 # Gatsby files
 .cache/
