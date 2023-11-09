@@ -1,12 +1,15 @@
 import express, { Application, Response as ExResponse, Request as ExRequest, NextFunction } from "express";
 import { ValidateError, Route } from "tsoa";
+import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 
 import router from "./routes";
+import corsConfig from "./utils/cors";
 
 const PORT = process.env.PORT || 3550;
 
 const app: Application = express();
+app.use(cors(corsConfig));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));

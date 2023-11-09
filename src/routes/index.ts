@@ -2,6 +2,7 @@ import express from "express";
 
 import PingController from "../controller/ping";
 import HealthController from "../controller/health";
+import { ReturnSummaryError } from "../models/errors";
 
 const router = express.Router();
 
@@ -19,8 +20,22 @@ router.post("/ping", async (req, res) => {
 });
 
 router.post("/ping/rec", async (req, res) => {
-  const response = await pingController.postMessageRec(req.body);
-  return res.send(response);
+  try {
+    const response = await pingController.postMessageRec(req.body);
+    return res.send(response);
+  } catch (err) {
+    if (err instanceof ReturnSummaryError) {
+      res.statusMessage = err.code || "Internal Server Error";
+      res.statusCode = err.status || 500;
+      return res.send(err.data);
+    } else {
+      console.error("Erreur inconnue sur /ping/rec");
+      console.error(err);
+      res.statusMessage = "Internal Server Error";
+      res.statusCode = 500;
+      return res.send();
+    }
+  }
 });
 
 router.get('/health', async (_req, res) => {
