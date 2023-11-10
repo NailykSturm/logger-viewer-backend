@@ -5,11 +5,12 @@ import swaggerUi from "swagger-ui-express";
 
 import router from "./routes";
 import corsConfig from "./utils/cors";
+import env from "./utils/load_env";
 
-const PORT = process.env.PORT || 3550;
+const PORT = env.PORT
 
 const app: Application = express();
-app.use(cors(corsConfig));
+// app.use(cors(corsConfig));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -26,9 +27,10 @@ app.use(
 
 app.listen(PORT, () => {
     console.log("Server is running on port", PORT);
+    console.log(`Server is running in ${process.env.NODE_ENV} mode`);
 });
 
-app.use("/api",router);
+app.use("/api", router);
 
 app.use(function notFoundHandler(_req, res: ExResponse) {
     res.status(404).send({
@@ -57,3 +59,5 @@ app.use(function errorHandler(
 
     next();
 });
+
+export { app, PORT };

@@ -60,7 +60,7 @@ export default class PingController {
         if (!data.payload) data.payload = [];
         data.payload.push("API pinged");
 
-        const url = `http://localhost:${loadEnv.LOGGER_SERVICE_PORT}/logger/ping`;
+        const url = `http://localhost:${loadEnv.LOGGER_SERVICE_URL}/logger/ping`;
 
         try {
             const response = await axios.post(url, data);

@@ -39,7 +39,7 @@ router.post("/ping/rec", async (req, res) => {
 });
 
 router.get('/health', async (_req, res) => {
-  const response = await healthController.index();
+  const response = await healthController.getHealth();
   return res.send(response);
 });
 

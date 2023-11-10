@@ -8,6 +8,6 @@ export default {
         "X-Access-Token",
         "Access-Control-Allow-Origin"
     ],
-    credentials: true,
-    methods: "GET,PUT,POST,DELETE",
+    // credentials: true,
+    // methods: "GET,PUT,POST,DELETE",
 } as CorsOptions;
